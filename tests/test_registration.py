@@ -1,10 +1,10 @@
-
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-
-PASSWORD_RECOVERY_LOGIN_LINK = (By.XPATH, "//a[text()='Войти']")
-from locators import BASE_URL, NAME_FIELD, VALID_NAME, EMAIL_FIELD, VALID_EMAIL, PASSWORD_FIELD, VALID_PASSWORD, REGISTER_BUTTON, INVALID_PASSWORD_ERROR
+from test_data import VALID_NAME, VALID_PASSWORD
+from urls import BASE_URL_REGISTOR
+from locators import NAME_FIELD, EMAIL_FIELD, PASSWORD_FIELD, REGISTER_BUTTON, INVALID_PASSWORD_ERROR
+from helpers import generate_unique_email
 
 
 def test_registration_success(driver):
@@ -13,38 +13,58 @@ def test_registration_success(driver):
     1. Открывается страница регистрации.
     2. Вводятся корректные данные:
          - Имя (не пустое);
-         - Email в формате login@domain, например, test_xxx@ya.ru;
+         - Email в формате login@domain, генерируется динамически;
          - Пароль, длиной не менее 6 символов.
-    3. После нажатия на "Зарегистрироваться" ожидается появление индикатора успешной регистрации (например, "Личный кабинет").
+    3. После нажатия на "Зарегистрироваться" ожидается переход на страницу логина.
     """
-    driver.get(f"{BASE_URL}/register")
-    WebDriverWait(driver, 10).until(EC.presence_of_element_located(NAME_FIELD))
-    driver.find_element(*NAME_FIELD).send_keys('Alenka')
-    driver.find_element(*EMAIL_FIELD).send_keys('Alenkaart_artemeva_19_789@gmail.com')
+    driver.get(BASE_URL_REGISTOR)
+
+    # Ожидаем видимость и заполняем поле "Имя"
+    WebDriverWait(driver, 10).until(EC.visibility_of_element_located(NAME_FIELD))
+    driver.find_element(*NAME_FIELD).send_keys(VALID_NAME)
+
+    # Генерируем уникальный email для регистрации
+    unique_email = generate_unique_email("ya.ru")
+    WebDriverWait(driver, 10).until(EC.visibility_of_element_located(EMAIL_FIELD))
+    driver.find_element(*EMAIL_FIELD).send_keys(unique_email)
+
+    # Ожидаем видимость и заполняем поле "Пароль"
+    WebDriverWait(driver, 10).until(EC.visibility_of_element_located(PASSWORD_FIELD))
     driver.find_element(*PASSWORD_FIELD).send_keys(VALID_PASSWORD)
-    driver.find_element(*REGISTER_BUTTON).click()
-    # После нажатия на "Зарегистрироваться", ожидаем переход на страницу логина
+
+    # Ожидаем кликабельность кнопки "Зарегистрироваться" и нажимаем её
+    WebDriverWait(driver, 10).until(EC.element_to_be_clickable(REGISTER_BUTTON)).click()
+
+    # Ждем перехода на страницу логина после регистрации
     WebDriverWait(driver, 15).until(EC.url_to_be("https://stellarburgers.nomoreparties.site/login"))
     assert driver.current_url == "https://stellarburgers.nomoreparties.site/login", "Переход на страницу логина не произошёл после регистрации"
 
-    # Закрытие драйвера
-    driver.quit()
 
 def test_registration_invalid_password(driver):
     """
     Тест проверки ошибки регистрации при вводе некорректного пароля:
     1. Открывается страница регистрации.
-    2. Вводятся корректные имя и email, но пароль короче 6 символов.
+    2. Вводятся корректные имя и email (email генерируется динамически), но пароль короче 6 символов.
     3. После нажатия на "Зарегистрироваться" ожидается сообщение об ошибке.
     """
-    driver.get(f"{BASE_URL}/register")
-    WebDriverWait(driver, 10).until(EC.presence_of_element_located(NAME_FIELD))
-    driver.find_element(*NAME_FIELD).send_keys(*VALID_NAME)
-    driver.find_element(*EMAIL_FIELD).send_keys(*VALID_EMAIL)
-    driver.find_element(*PASSWORD_FIELD).send_keys("123")  # неправильно: менее 6 символов
-    driver.find_element(*REGISTER_BUTTON).click()
+    driver.get(BASE_URL_REGISTOR)
+
+    # Заполняем поле "Имя"
+    WebDriverWait(driver, 10).until(EC.visibility_of_element_located(NAME_FIELD))
+    driver.find_element(*NAME_FIELD).send_keys(VALID_NAME)
+
+    # Генерируем уникальный email для регистрации
+    unique_email = generate_unique_email("ya.ru")
+    WebDriverWait(driver, 10).until(EC.visibility_of_element_located(EMAIL_FIELD))
+    driver.find_element(*EMAIL_FIELD).send_keys(unique_email)
+
+    # Заполняем поле "Пароль" некорректным значением (менее 6 символов)
+    WebDriverWait(driver, 10).until(EC.visibility_of_element_located(PASSWORD_FIELD))
+    driver.find_element(*PASSWORD_FIELD).send_keys("123")
+
+    # Ждем кликабельность кнопки "Зарегистрироваться" и нажимаем её
+    WebDriverWait(driver, 10).until(EC.element_to_be_clickable(REGISTER_BUTTON)).click()
+
+    # Ожидаем появления сообщения об ошибке для некорректного пароля
     error_element = WebDriverWait(driver, 10).until(EC.visibility_of_element_located(INVALID_PASSWORD_ERROR))
     assert error_element.is_displayed(), "Сообщение об ошибке некорректного пароля не отображается"
-
-    # Закрытие драйвера
-    driver.quit()
