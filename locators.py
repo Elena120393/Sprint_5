@@ -4,7 +4,7 @@ from selenium.webdriver.common.by import By
 
 
 # Локаторы для страницы регистрации
-NAME_FIELD = (By.XPATH, "//*[@id='root']/div/main/div/form/fieldset[1]/div/div/input")
+NAME_FIELD = (By.XPATH, "//input[@name='name']")
 EMAIL_FIELD = (By.XPATH, "(//input[@name='name' and @type='text'])[2]")
 PASSWORD_FIELD = (By.NAME, "Пароль")
 
@@ -15,18 +15,21 @@ INVALID_PASSWORD_ERROR = (By.XPATH, "//*[contains(text(), 'Некорректн�
 # Локаторы для входа
 # На главной странице (кнопка "Войти в аккаунт")
 HOME_LOGIN_BUTTON = (By.XPATH, "//button[text()='Войти в аккаунт']")
-# На странице входа (форма)
-LOGIN_EMAIL_FIELD = (By.CSS_SELECTOR, "#root > div > main > div > form > fieldset:nth-child(1) > div > div > input")
-LOGIN_PASSWORD_FIELD = (By.XPATH, '//*[@id="root"]/div/main/div/form/fieldset[2]/div/div/input')
-LOGIN_SUBMIT_BUTTON = (By.XPATH, '//*[@id="root"]/div/main/div/form/button')
+
 
 # Локатор для кнопки "Личный кабинет"
 PERSONAL_CABINET_BUTTON = (By.XPATH, "//*[text()='Личный кабинет']")
 
 # Локаторы для формы логина, используемые в тесте "test_login_from_personal_cabinet_button"
-LOGIN_FORM_EMAIL_FIELD = (By.XPATH, '//*[@id="root"]/div/main/div/form/fieldset[1]/div/div/input')
-LOGIN_FORM_PASSWORD_FIELD = (By.CSS_SELECTOR, "input.text.input__textfield.text_type_main-default[name='Пароль']")
-LOGIN_FORM_SUBMIT_BUTTON = (By.XPATH, '//*[@id="root"]/div/main/div/form/button')
+LOGIN_EMAIL_FIELD = (By.CSS_SELECTOR, "input.text.input__textfield.text_type_main-default[name='name']")
+LOGIN_PASSWORD_FIELD = (By.CSS_SELECTOR, "form input[name='Пароль']")
+LOGIN_SUBMIT_BUTTON = (By.CSS_SELECTOR, "button.button_button__33qZ0.button_button_type_primary__1O7Bx.button_button_size_medium__3zxIa")
+
+# Алиасы для сохранения обратной совместимости с тестами, которые ждут имена с префиксом LOGIN_FORM_
+LOGIN_FORM_EMAIL_FIELD = LOGIN_EMAIL_FIELD
+LOGIN_FORM_PASSWORD_FIELD = LOGIN_PASSWORD_FIELD
+LOGIN_FORM_SUBMIT_BUTTON = LOGIN_SUBMIT_BUTTON
+
 
 # Локаторы для проверки активного состояния табов
 BUNS_TAB_ACTIVE = (By.XPATH, "//div[contains(@class, 'constructor-tab_type_current') and contains(., 'Булки')]")
@@ -61,12 +64,13 @@ CONSTRUCTOR_INDICATOR = (By.XPATH, "//*[contains(text(),'Булки')]")
 LOGOUT_BUTTON = (By.XPATH, "//button[@type='button' and text()='Выход']")
 
 #Локатор для личного кабинета
-PERSONAL_CABINET_BUTON = (By.XPATH, '//*[@id="root"]/div/header/nav/a/p')
+PERSONAL_CABINET_BUTON = (By.XPATH, "//p[contains(@class, 'AppHeader_header__linkText') and normalize-space(text())='Личный Кабинет']")
 
 # Локаторы для раздела “Конструктор”
 BUNS_TAB = (By.XPATH, "//*[@id='root']/div/main/section[1]/div[1]/div[3]/span")
-SAUCES_TAB = (By.XPATH, "//*[@id='root']/div/main/section[1]/div[1]/div[2]/span")
-FILLINGS_TAB = (By.XPATH, "//*[@id='root']/div/main/section[1]/div[1]/div[3]/span")
+SAUCES_TAB = (By.XPATH, "//span[contains(@class, 'text_type_main-default') and normalize-space(text())='Соусы']")
+FILLINGS_TAB = (By.XPATH, "//span[contains(@class, 'text_type_main-default') and normalize-space(text())='Начинки']")
+
 
 BUNS_IMAGE = (By.XPATH, "//img[@src='https://code.s3.yandex.net/react/code/bun-01.png' and @alt='Флюоресцентная булка R2-D3']")
 SAUCE_BUTTON = (By.XPATH, "//p[@class='BurgerIngredient_ingredient__text__yp3dH' and text()='Соус традиционный галактический']")
