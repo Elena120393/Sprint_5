@@ -5,7 +5,7 @@ from selenium.webdriver.common.by import By
 
 # Локаторы для страницы регистрации
 NAME_FIELD = (By.XPATH, "//input[@name='name']")
-EMAIL_FIELD = (By.XPATH, "(//input[@name='name' and @type='text'])[2]")
+EMAIL_FIELD = (By.XPATH, "//label[normalize-space()='Email']/following-sibling::input")
 PASSWORD_FIELD = (By.NAME, "Пароль")
 
 REGISTER_BUTTON = (By.XPATH, "//button[normalize-space()='Зарегистрироваться']")
@@ -75,3 +75,5 @@ FILLINGS_TAB = (By.XPATH, "//span[contains(@class, 'text_type_main-default') and
 BUNS_IMAGE = (By.XPATH, "//img[@src='https://code.s3.yandex.net/react/code/bun-01.png' and @alt='Флюоресцентная булка R2-D3']")
 SAUCE_BUTTON = (By.XPATH, "//p[@class='BurgerIngredient_ingredient__text__yp3dH' and text()='Соус традиционный галактический']")
 FILLINGS_BUTTON = (By.XPATH, "//a[contains(@class, 'BurgerIngredient_ingredient__1TVf6') and @href='/ingredient/61c0c5a71d1f82001bdaaa71' and contains(., 'Биокотлета из марсианской Магнолии')]")
+
+TAB_PARENT = (By.XPATH, "./..")

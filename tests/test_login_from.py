@@ -43,12 +43,8 @@ class TestLogin:
         driver.find_element(*LOGIN_EMAIL_FIELD).send_keys(VALID_EMAIL)
         driver.find_element(*LOGIN_PASSWORD_FIELD).send_keys(VALID_PASSWORD)
 
-        time.sleep(7)
-
         # Нажатие на кнопку входа
         driver.find_element(*LOGIN_SUBMIT_BUTTON).click()
-
-        time.sleep(7)
 
         # Ожидание появления кнопки "Оформить заказ" на главной странице
         order_button = WebDriverWait(driver, 10).until(
